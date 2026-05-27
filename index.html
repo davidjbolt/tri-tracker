@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sprint Tri Tracker — Sept 12</title>
+<title>Dave's Tri Tracker — Sept 12</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -13,6 +13,7 @@
     --weights: #7c3aed; --weights-bg: #f5f3ff;
     --brick: #be185d; --brick-bg: #fdf2f8;
     --rest: #6b7280; --rest-bg: #f9fafb;
+    --tempo: #dc2626; --tempo-bg: #fef2f2;
     --done: #16a34a;
     --ink: #1a1a1a;
     --paper: #faf9f7;
@@ -21,138 +22,66 @@
     --muted: #78716c;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'DM Mono', monospace;
-    background: var(--paper);
-    color: var(--ink);
-    min-height: 100vh;
-  }
+  body { font-family: 'DM Mono', monospace; background: var(--paper); color: var(--ink); min-height: 100vh; }
 
-  /* HEADER */
-  header {
-    background: var(--ink);
-    color: #fff;
-    padding: 2rem 2rem 1.5rem;
-    position: relative;
-    overflow: hidden;
-  }
-  header::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,.03) 40px, rgba(255,255,255,.03) 41px);
-  }
+  header { background: var(--ink); color: #fff; padding: 2rem 2rem 1.5rem; position: relative; overflow: hidden; }
+  header::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,.03) 40px, rgba(255,255,255,.03) 41px); }
   .header-inner { position: relative; max-width: 900px; margin: 0 auto; }
-  .race-label {
-    font-size: 10px; letter-spacing: .2em; text-transform: uppercase;
-    color: rgba(255,255,255,.5); margin-bottom: .5rem;
-  }
-  h1 {
-    font-family: 'Fraunces', serif;
-    font-size: clamp(1.8rem, 5vw, 3rem);
-    font-weight: 700; line-height: 1.1;
-    margin-bottom: .75rem;
-  }
+  .race-label { font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: rgba(255,255,255,.5); margin-bottom: .5rem; }
+  h1 { font-family: 'Fraunces', serif; font-size: clamp(1.8rem, 5vw, 3rem); font-weight: 700; line-height: 1.1; margin-bottom: .75rem; }
   h1 em { font-style: italic; font-weight: 300; }
-  .header-meta {
-    display: flex; gap: 2rem; align-items: center; flex-wrap: wrap;
-    font-size: 11px; color: rgba(255,255,255,.6);
-  }
+  .header-meta { display: flex; gap: 2rem; align-items: center; flex-wrap: wrap; font-size: 11px; color: rgba(255,255,255,.6); }
   .header-meta strong { color: #fff; }
+  .header-tag { background: rgba(220,38,38,.25); color: #fca5a5; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; padding: 2px 8px; border-radius: 3px; }
 
-  /* PROGRESS BAR */
-  .progress-section {
-    background: var(--cream); border-bottom: 1px solid var(--border);
-    padding: 1.25rem 2rem;
-  }
+  .progress-section { background: var(--cream); border-bottom: 1px solid var(--border); padding: 1.25rem 2rem; }
   .progress-inner { max-width: 900px; margin: 0 auto; }
-  .progress-stats {
-    display: flex; gap: 2rem; flex-wrap: wrap;
-    margin-bottom: .75rem; font-size: 11px; color: var(--muted);
-  }
+  .progress-stats { display: flex; gap: 2rem; flex-wrap: wrap; margin-bottom: .75rem; font-size: 11px; color: var(--muted); }
   .progress-stats span strong { color: var(--ink); font-size: 18px; display: block; line-height: 1.2; }
-  .progress-bar-wrap {
-    background: #ddd9d0; border-radius: 2px; height: 6px; overflow: hidden;
-  }
-  .progress-bar-fill {
-    height: 100%; border-radius: 2px;
-    background: linear-gradient(90deg, #0e7490, #1d4ed8, #b45309);
-    transition: width .6s ease;
-  }
+  .progress-bar-wrap { background: #ddd9d0; border-radius: 2px; height: 6px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, #0e7490, #1d4ed8, #b45309); transition: width .6s ease; }
   .discipline-bars { display: flex; gap: 1rem; margin-top: .75rem; flex-wrap: wrap; }
   .disc-bar { display: flex; align-items: center; gap: .5rem; font-size: 10px; }
   .disc-bar-track { width: 80px; height: 4px; background: #ddd9d0; border-radius: 2px; overflow: hidden; }
   .disc-bar-fill { height: 100%; border-radius: 2px; transition: width .4s ease; }
 
-  /* PHASE TABS */
-  .phase-nav {
-    background: #fff; border-bottom: 1px solid var(--border);
-    padding: 0 2rem; overflow-x: auto;
-  }
-  .phase-nav-inner { max-width: 900px; margin: 0 auto; display: flex; gap: 0; }
-  .phase-btn {
-    background: none; border: none; cursor: pointer;
-    font-family: 'DM Mono', monospace; font-size: 11px;
-    padding: .75rem 1.25rem; letter-spacing: .08em; text-transform: uppercase;
-    color: var(--muted); border-bottom: 2px solid transparent;
-    transition: all .15s; white-space: nowrap;
-  }
+  .phase-nav { background: #fff; border-bottom: 1px solid var(--border); padding: 0 2rem; overflow-x: auto; }
+  .phase-nav-inner { max-width: 900px; margin: 0 auto; display: flex; }
+  .phase-btn { background: none; border: none; cursor: pointer; font-family: 'DM Mono', monospace; font-size: 11px; padding: .75rem 1.25rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); border-bottom: 2px solid transparent; transition: all .15s; white-space: nowrap; }
   .phase-btn.active { color: var(--ink); border-bottom-color: var(--ink); }
   .phase-btn:hover:not(.active) { color: var(--ink); }
 
-  /* MAIN */
   main { max-width: 900px; margin: 0 auto; padding: 1.5rem 2rem 4rem; }
-  .phase-note {
-    background: var(--cream); border: 1px solid var(--border);
-    border-radius: 4px; padding: 1rem 1.25rem;
-    font-size: 12px; line-height: 1.7; color: var(--muted);
-    margin-bottom: 1.5rem;
-  }
+  .phase-note { background: var(--cream); border: 1px solid var(--border); border-radius: 4px; padding: 1rem 1.25rem; font-size: 12px; line-height: 1.7; color: var(--muted); margin-bottom: 1.5rem; }
   .phase-note strong { color: var(--ink); }
+  .intensity-legend { background: #fef2f2; border: 1px solid #fecaca; border-radius: 4px; padding: .75rem 1.25rem; font-size: 11px; line-height: 1.7; color: var(--muted); margin-bottom: 1.5rem; }
+  .intensity-legend strong { color: var(--tempo); }
 
-  /* WEEK */
   .week { margin-bottom: 1rem; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
-  .week-header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: .75rem 1rem; background: #fff; cursor: pointer;
-    transition: background .1s;
-  }
+  .week-header { display: flex; align-items: center; justify-content: space-between; padding: .75rem 1rem; background: #fff; cursor: pointer; transition: background .1s; }
   .week-header:hover { background: var(--cream); }
   .week-label { font-size: 12px; font-weight: 500; letter-spacing: .05em; }
   .week-dates { font-size: 10px; color: var(--muted); }
   .week-progress { display: flex; align-items: center; gap: .75rem; }
   .week-pips { display: flex; gap: 3px; }
-  .pip {
-    width: 8px; height: 8px; border-radius: 50%;
-    border: 1.5px solid var(--border); background: #fff;
-    transition: all .15s;
-  }
+  .pip { width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid var(--border); background: #fff; transition: all .15s; }
   .pip.done { background: var(--done); border-color: var(--done); }
   .pip.rest { background: var(--border); border-color: var(--border); }
+  .pip.tempo { border-color: var(--tempo); }
   .week-pct { font-size: 10px; color: var(--muted); min-width: 28px; text-align: right; }
   .week-chevron { font-size: 10px; color: var(--muted); transition: transform .2s; }
   .week-chevron.open { transform: rotate(180deg); }
-  .week-complete { background: #f0fdf4; }
   .week-complete .week-header { background: #f0fdf4; }
 
-  /* DAYS */
   .week-days { display: none; border-top: 1px solid var(--border); }
   .week-days.open { display: block; }
-  .day-row {
-    display: flex; align-items: flex-start; gap: .75rem;
-    padding: .875rem 1rem; border-bottom: 1px solid var(--border);
-    transition: background .1s;
-  }
+  .day-row { display: flex; align-items: flex-start; gap: .75rem; padding: .875rem 1rem; border-bottom: 1px solid var(--border); transition: background .1s; }
   .day-row:last-child { border-bottom: none; }
   .day-row.completed { background: #fafffe; }
   .day-row.rest-day { opacity: .6; }
+  .day-row.tempo-day { border-left: 3px solid var(--tempo); }
 
-  .day-check {
-    width: 20px; height: 20px; border-radius: 4px;
-    border: 1.5px solid var(--border); background: #fff;
-    cursor: pointer; flex-shrink: 0; margin-top: 1px;
-    display: flex; align-items: center; justify-content: center;
-    transition: all .15s; font-size: 11px;
-  }
+  .day-check { width: 20px; height: 20px; border-radius: 4px; border: 1.5px solid var(--border); background: #fff; cursor: pointer; flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; transition: all .15s; font-size: 11px; }
   .day-check:hover { border-color: var(--done); }
   .day-check.checked { background: var(--done); border-color: var(--done); color: #fff; }
   .day-check.rest-check { cursor: default; background: var(--rest-bg); }
@@ -161,26 +90,20 @@
   .day-name-label { font-size: 10px; color: var(--muted); letter-spacing: .07em; text-transform: uppercase; margin-bottom: 3px; }
   .day-title { font-size: 13px; font-weight: 500; line-height: 1.3; }
   .day-detail { font-size: 11px; color: var(--muted); margin-top: 3px; line-height: 1.5; }
+  .tempo-note { font-size: 10px; color: var(--tempo); margin-top: 4px; font-weight: 500; }
 
-  .disc-badge {
-    font-size: 9px; letter-spacing: .1em; text-transform: uppercase;
-    padding: 2px 7px; border-radius: 3px; font-weight: 500;
-    flex-shrink: 0; margin-top: 3px;
-  }
+  .disc-badge { font-size: 9px; letter-spacing: .1em; text-transform: uppercase; padding: 2px 7px; border-radius: 3px; font-weight: 500; flex-shrink: 0; margin-top: 3px; }
   .badge-swim { background: var(--swim-bg); color: var(--swim); }
   .badge-bike { background: var(--bike-bg); color: var(--bike); }
   .badge-run { background: var(--run-bg); color: var(--run); }
   .badge-weights { background: var(--weights-bg); color: var(--weights); }
   .badge-brick { background: var(--brick-bg); color: var(--brick); }
   .badge-rest { background: var(--rest-bg); color: var(--rest); }
+  .badge-tempo-swim { background: var(--tempo-bg); color: var(--tempo); }
+  .badge-tempo-bike { background: var(--tempo-bg); color: var(--tempo); }
+  .badge-tempo-run { background: var(--tempo-bg); color: var(--tempo); }
 
-  /* RACE DAY */
-  .race-day-card {
-    background: var(--ink); color: #fff;
-    border-radius: 8px; padding: 2rem; text-align: center;
-    margin: 1.5rem 0;
-  }
-  .race-day-card .race-icon { font-size: 3rem; margin-bottom: .75rem; }
+  .race-day-card { background: var(--ink); color: #fff; border-radius: 8px; padding: 2rem; text-align: center; margin: 1.5rem 0; }
   .race-day-card h2 { font-family: 'Fraunces', serif; font-size: 1.5rem; margin-bottom: .5rem; }
   .race-day-card p { font-size: 12px; color: rgba(255,255,255,.6); }
 
@@ -194,7 +117,7 @@
 
 <header>
   <div class="header-inner">
-    <div class="race-label">Sprint Triathlon</div>
+    <div class="race-label">Sprint Triathlon — Dave</div>
     <h1>16 Weeks to <em>race day</em></h1>
     <div class="header-meta">
       <span><strong>Sept 12, 2025</strong> race date</span>
@@ -202,6 +125,7 @@
       <span><strong>20km</strong> bike</span>
       <span><strong>5km</strong> run</span>
       <span><strong>6 days/wk</strong></span>
+      <span class="header-tag">80/20 w/ tempo</span>
     </div>
   </div>
 </header>
@@ -214,9 +138,7 @@
       <span><strong id="stat-pct">0%</strong>complete</span>
       <span><strong id="stat-weeks">0</strong>weeks finished</span>
     </div>
-    <div class="progress-bar-wrap">
-      <div class="progress-bar-fill" id="main-bar" style="width:0%"></div>
-    </div>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="main-bar" style="width:0%"></div></div>
     <div class="discipline-bars">
       <div class="disc-bar"><span>🏊</span><div class="disc-bar-track"><div class="disc-bar-fill" id="bar-swim" style="width:0%;background:var(--swim)"></div></div><span id="lbl-swim">0%</span></div>
       <div class="disc-bar"><span>🚴</span><div class="disc-bar-track"><div class="disc-bar-fill" id="bar-bike" style="width:0%;background:var(--bike)"></div></div><span id="lbl-bike">0%</span></div>
@@ -238,231 +160,343 @@
 <main id="main-content"></main>
 
 <script>
-// ─── PLAN DATA ───────────────────────────────────────────────────────────────
-// Race is Sept 12. Week 1 starts May 19 (16 weeks out).
-const RACE_DATE = new Date('2025-09-12');
-const WEEK1_START = new Date('2025-05-19');
+const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const STORAGE_KEY = 'dave_tri_tracker_v2';
 
-const DAY_NAMES = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+// 80/20 rule: ~1 tempo session per week per discipline, introduced progressively
+// Phase 1 (wks 1-4): tempo on bike only (strength), easy swim + run
+// Phase 2 (wks 5-10): tempo on bike + run, swim adds threshold sets
+// Phase 3 (wks 11-14): tempo all three, brick intensity
+// Phase 4 (wks 15-16): taper, drop tempo
 
-const PHASES = [
-  { id: 0, label: 'Phase 1 · Base', weeks: [1,2,3,4], note: '<strong>Focus: Build swim technique, easy run start, maintain bike.</strong> Swimming is your biggest unknown — this phase is about getting comfortable in the water. Run is intentionally very easy to protect the sciatica. Bike stays zone 2.' },
-  { id: 1, label: 'Phase 2 · Build', weeks: [5,6,7,8,9,10], note: '<strong>Focus: Volume increases across all three disciplines.</strong> Run build continues conservatively. Swim distances grow past race distance. Bike stays zone 2 — your fitness is already there, no need to push it.' },
-  { id: 2, label: 'Phase 3 · Sharpen', weeks: [11,12,13,14], note: '<strong>Focus: Race-specific work, brick sessions, confidence building.</strong> You\'ll run the full 5km in training multiple times. Brick workouts (bike → run) prepare your legs for the transition. Swim stays solid.' },
-  { id: 3, label: 'Phase 4 · Taper', weeks: [15,16], note: '<strong>Focus: Rest, sharpen, arrive fresh.</strong> Volume drops significantly. Intensity stays briefly to keep the legs sharp. Trust your training. Race week is about rest, nutrition, and logistics.' },
+const WEEKS = [
+  // ── PHASE 1: BASE ──────────────────────────────────────────────────────────
+  {num:1, dates:'May 19 – May 25', phase:0,
+   note:'Week 1 — establish routine. Bike is your home base. Swim and run are easy only.',
+   sessions:[
+    {disc:'swim', title:'Technique swim', detail:'30–40 min. Drills: catch-up, side kick. Very easy effort. Focus on form only.'},
+    {disc:'bike', title:'Zone 2 ride', detail:'45 min easy, conversational pace.'},
+    {disc:'run', title:'Easy run/walk', detail:'20 min. Walk breaks as needed. Protect the sciatica — stop if pain.'},
+    {disc:'swim', title:'Endurance swim', detail:'350m continuous. Focus on breathing every 3 strokes.'},
+    {disc:'weights', title:'Strength A', detail:'Deadlift 3×8 · Goblet squat 3×10 · Clamshell 2×20 · Face pull 3×15 · Bird dog 3×10'},
+    {disc:'bike', title:'Long zone 2 ride', detail:'55 min easy. Relaxed, steady effort throughout.'},
+    {disc:'rest', title:'Rest day', detail:'Full rest or 15 min light mobility.'},
+  ]},
+  {num:2, dates:'May 26 – Jun 1', phase:0,
+   note:'Week 2 — first tempo on the bike. 80/20 in action: one harder effort, everything else easy.',
+   sessions:[
+    {disc:'swim', title:'Technique swim', detail:'35 min. Drills + 200m continuous easy. No intensity yet in the water.'},
+    {disc:'tempo-bike', title:'Tempo bike', detail:'50 min total. Warm up 15 min zone 2, then 2×8 min at a comfortably hard effort (zone 3–4, you can speak in short sentences), 5 min easy between, cool down 10 min.', tempo:'🔴 Tempo: 2×8 min threshold effort on the bike. Rate of perceived exertion ~7/10.'},
+    {disc:'run', title:'Easy run', detail:'22 min easy. Keep it truly easy — zone 2.'},
+    {disc:'swim', title:'Endurance swim', detail:'400m continuous. Slow and steady.'},
+    {disc:'weights', title:'Strength A', detail:'Deadlift 3×8 · Goblet squat 3×10 · Clamshell 2×20 · Face pull 3×15 · Bird dog 3×10'},
+    {disc:'bike', title:'Long zone 2 ride', detail:'60 min easy. This is recovery from Tuesday\'s tempo — keep it genuinely easy.'},
+    {disc:'rest', title:'Rest day', detail:'Full rest.'},
+  ]},
+  {num:3, dates:'Jun 2 – Jun 8', phase:0,
+   note:'Week 3 — tempo bike gets slightly longer. Swim and run still easy base building.',
+   sessions:[
+    {disc:'swim', title:'Technique + endurance', detail:'400m. Mix drills with 2×100m easy continuous.'},
+    {disc:'tempo-bike', title:'Tempo bike', detail:'55 min total. Warm up 15 min, then 2×10 min threshold effort, 5 min easy between, cool down.', tempo:'🔴 Tempo: 2×10 min. Build to this from last week\'s 2×8.'},
+    {disc:'run', title:'Easy run', detail:'25 min easy. Truly zone 2 — if you can\'t hold a conversation, slow down.'},
+    {disc:'swim', title:'Endurance swim', detail:'450m. Aim for one continuous effort.'},
+    {disc:'weights', title:'Strength A', detail:'Deadlift 3×8 · Goblet squat 3×10 · Clamshell 2×20 · Face pull 3×15 · Bird dog 3×10'},
+    {disc:'bike', title:'Long zone 2 ride', detail:'65 min easy. Fuel with a gel or bar if over 60 min.'},
+    {disc:'rest', title:'Rest day', detail:'Rest. Foam roll quads and calves.'},
+  ]},
+  {num:4, dates:'Jun 9 – Jun 15', phase:0,
+   note:'Week 4 — recovery week. Drop tempo, pull back volume ~20%. Let adaptations settle.',
+   sessions:[
+    {disc:'swim', title:'Easy swim', detail:'300m easy. No pressure, just feel the water.'},
+    {disc:'bike', title:'Zone 2 ride', detail:'40 min easy. Recovery ride only.'},
+    {disc:'run', title:'Easy run', detail:'20 min very easy.'},
+    {disc:'swim', title:'Technique', detail:'20 min drills only. Focus on catch and entry.'},
+    {disc:'weights', title:'Strength A (light)', detail:'Reduce weight 10%. Deadlift 2×8 · Squat 2×10 · Clamshell 2×15 · Face pull 2×15'},
+    {disc:'bike', title:'Moderate zone 2 ride', detail:'50 min easy.'},
+    {disc:'rest', title:'Rest day', detail:'Rest.'},
+  ]},
+
+  // ── PHASE 2: BUILD ─────────────────────────────────────────────────────────
+  {num:5, dates:'Jun 16 – Jun 22', phase:1,
+   note:'Build 1 starts. Tempo now on bike AND run. Swim adds threshold sets for the first time.',
+   sessions:[
+    {disc:'tempo-swim', title:'Threshold swim sets', detail:'600m total. Warm up 150m easy, then 4×75m at a harder effort with 20s rest, cool down 150m easy.', tempo:'🔴 Tempo: 4×75m at ~80% effort. First threshold swim work — controlled and smooth.'},
+    {disc:'tempo-bike', title:'Tempo bike', detail:'55 min. Warm up 15 min, 2×12 min threshold, 5 min easy between, cool down.', tempo:'🔴 Tempo: 2×12 min. Extending from Phase 1.'},
+    {disc:'run', title:'Easy run', detail:'28 min easy zone 2. Sciatica check.'},
+    {disc:'swim', title:'Endurance swim', detail:'500m continuous easy. You\'re at race distance — own it.'},
+    {disc:'weights', title:'Strength B', detail:'Romanian deadlift 3×10 · Split squat 3×8 · Seated row 3×12 · Band pull-apart 3×15 · Plank 3×30s'},
+    {disc:'bike', title:'Long zone 2 ride', detail:'65 min easy. Practice eating and drinking on the bike — race nutrition starts now.'},
+    {disc:'rest', title:'Rest day', detail:'Rest.'},
+  ]},
+  {num:6, dates:'Jun 23 – Jun 29', phase:1,
+   note:'Week 6 — adding tempo run. Three disciplines now have intensity work. Keep easy days truly easy.',
+   sessions:[
+    {disc:'swim', title:'Endurance swim', detail:'550m easy continuous. Strong steady pace.'},
+    {disc:'tempo-bike', title:'Tempo bike', detail:'60 min. Warm up 15 min, then 3×8 min threshold with 4 min easy between, cool down.', tempo:'🔴 Tempo: 3×8 min — more reps, slightly shorter to manage load with new run tempo this week.'},
+    {disc:'tempo-run', title:'Tempo run', detail:'30 min total. Easy 10 min warm up, 10 min at a comfortably hard effort (zone 3, ~7/10), easy 10 min cool down.', tempo:'🔴 First tempo run. Zone 3 — harder than easy, not a sprint. Protect the sciatica.'},
+    {disc:'tempo-swim', title:'Threshold swim sets', detail:'650m total. 150m warm up, 5×75m threshold with 20s rest, 150m cool down.', tempo:'🔴 Tempo: 5×75m. One more rep than week 5.'},
+    {disc:'weights', title:'Strength B', detail:'Romanian deadlift 3×10 · Split squat 3×8 · Seated row 3×12 · Band pull-apart 3×15 · Plank 3×30s'},
+    {disc:'bike', title:'Long zone 2 ride', detail:'70 min easy. Nutrition practice.'},
+    {disc:'rest', title:'Rest day', detail:'Rest.'},
+  ]},
+  {num:7, dates:'Jun 30 – Jul 6', phase:1,
+   note:'Week 7 — building all three tempo efforts. Swim now doing longer threshold intervals.',
+   sessions:[
+    {disc:'tempo-swim', title:'Threshold swim', detail:'700m total. 150m warm up, 4×100m at threshold effort with 25s rest, 150m cool down.', tempo:'🔴 Tempo: 4×100m — moving from 75m to 100m threshold reps.'},
+    {disc:'tempo-bike', title:'Tempo bike', detail:'60 min. Warm up 15 min, 2×15 min threshold, 5 min easy between, cool down.', tempo:'🔴 Tempo: 2×15 min sustained efforts.'},
+    {disc:'tempo-run', title:'Tempo run', detail:'32 min. Easy 10 min, 12 min tempo effort, easy 10 min.', tempo:'🔴 Tempo run: 12 min sustained. RPE ~7/10.'},
+    {disc:'swim', title:'Endurance swim', detail:'600m easy continuous.'},
+    {disc:'weights', title:'Strength B', detail:'Romanian deadlift 3×10 · Split squat 3×8 · Seated row 3×12 · Band pull-apart 3×15 · Plank 3×30s'},
+    {disc:'bike', title:'Long zone 2 ride', detail:'70 min easy.'},
+    {disc:'rest', title:'Rest day', detail:'Rest.'},
+  ]},
+  {num:8, dates:'Jul 7 – Jul 13', phase:1,
+   note:'Week 8 — recovery week. Drop all tempo. Let the fitness consolidate.',
+   sessions:[
+    {disc:'swim', title:'Easy swim', detail:'400m easy. No intensity.'},
+    {disc:'bike', title:'Zone 2 ride', detail:'45 min easy recovery ride.'},
+    {disc:'run', title:'Easy run', detail:'25 min easy.'},
+    {disc:'swim', title:'Technique', detail:'25 min drills. Quality stroke work.'},
+    {disc:'run', title:'Easy run', detail:'25 min easy.'},
+    {disc:'bike', title:'Moderate zone 2 ride', detail:'55 min easy.'},
+    {disc:'rest', title:'Rest day', detail:'Rest.'},
+  ]},
+  {num:9, dates:'Jul 14 – Jul 20', phase:1,
+   note:'Week 9 — tempo returns, distances grow. Open water swim practice starts.',
+   sessions:[
+    {disc:'tempo-swim', title:'Open water + threshold', detail:'700m. Swim open water if possible. Include 4×100m at threshold effort.', tempo:'🔴 Tempo: 4×100m threshold in open water. Practice sighting every 6–8 strokes during easy portions.'},
+    {disc:'tempo-run', title:'Tempo run', detail:'35 min. Easy 10 min, 15 min tempo, easy 10 min.', tempo:'🔴 Tempo run: 15 min sustained. You should be working but in control.'},
+    {disc:'tempo-bike', title:'Tempo bike', detail:'65 min. Warm up 15 min, 3×10 min threshold with 4 min easy between, cool down.', tempo:'🔴 Tempo: 3×10 min. Higher volume of threshold work.'},
+    {disc:'swim', title:'Endurance swim', detail:'750m easy — full race distance. You\'ve got this.'},
+    {disc:'weights', title:'Strength B', detail:'Romanian deadlift 3×10 · Split squat 3×8 · Seated row 3×12 · Band pull-apart 3×15 · Plank 3×30s'},
+    {disc:'bike', title:'Long zone 2 ride', detail:'75 min easy. Race nutrition practice.'},
+    {disc:'rest', title:'Rest day', detail:'Rest.'},
+  ]},
+  {num:10, dates:'Jul 21 – Jul 27', phase:1,
+   note:'Week 10 — peak build volume. Tempo workouts at their longest before the sharpening phase.',
+   sessions:[
+    {disc:'tempo-swim', title:'Threshold swim', detail:'800m total. 200m warm up, 5×100m threshold with 25s rest, 200m cool down.', tempo:'🔴 Tempo: 5×100m — longest threshold swim set yet.'},
+    {disc:'tempo-bike', title:'Tempo bike', detail:'70 min. Warm up 15 min, 2×20 min threshold with 5 min easy between, cool down.', tempo:'🔴 Tempo: 2×20 min sustained efforts. This is the hardest bike workout of the plan.'},
+    {disc:'tempo-run', title:'Tempo run', detail:'38 min. Easy 10 min, 18 min tempo, easy 10 min.', tempo:'🔴 Tempo run: 18 min — longest tempo run of the build phase.'},
+    {disc:'swim', title:'Endurance swim', detail:'800m easy. Beyond race distance — you\'re banking confidence.'},
+    {disc:'weights', title:'Strength B', detail:'Romanian deadlift 3×10 · Split squat 3×8 · Seated row 3×12 · Band pull-apart 3×15 · Plank 3×30s'},
+    {disc:'bike', title:'Long zone 2 ride', detail:'80 min easy. Longest ride of the plan. Fuel well.'},
+    {disc:'rest', title:'Rest day', detail:'Rest. You\'ve earned it.'},
+  ]},
+
+  // ── PHASE 3: SHARPEN ───────────────────────────────────────────────────────
+  {num:11, dates:'Jul 28 – Aug 3', phase:2,
+   note:'Sharpen phase — race-specific intensity. Brick sessions. Tempo becomes more race-paced.',
+   sessions:[
+    {disc:'tempo-swim', title:'Race-pace swim', detail:'900m total. 200m warm up, 4×100m at race pace (strong, sustained), 100m easy, 2×75m fast, 150m cool down.', tempo:'🔴 Race pace: these should feel like race effort — controlled aggression.'},
+    {disc:'brick', title:'Brick + tempo run', detail:'Bike 45 min (20 min zone 2, 15 min threshold, 10 min zone 2), then immediately run 20 min (10 min easy, 10 min tempo effort).', tempo:'🔴 Tempo in both legs of the brick. This is race simulation.'},
+    {disc:'tempo-run', title:'Tempo run', detail:'35 min. Easy 8 min, 20 min tempo, easy 7 min.', tempo:'🔴 Tempo run: 20 min. Longest tempo run of the plan.'},
+    {disc:'swim', title:'Open water practice', detail:'800m open water. Sight every 6 strokes. Practice your start and turns.'},
+    {disc:'weights', title:'Strength (lighter)', detail:'Reduce weights 15%. Deadlift 2×8 · Squat 2×10 · Clamshell 2×20 · Face pull 2×15.'},
+    {disc:'bike', title:'Zone 2 ride', detail:'60 min easy. Recovery from brick on Tuesday.'},
+    {disc:'rest', title:'Rest day', detail:'Rest.'},
+  ]},
+  {num:12, dates:'Aug 4 – Aug 10', phase:2,
+   note:'Week 12 — recovery week within sharpen phase. Keep one tempo effort, drop the rest.',
+   sessions:[
+    {disc:'swim', title:'Easy swim', detail:'500m easy. No intensity.'},
+    {disc:'tempo-bike', title:'Tempo bike (short)', detail:'50 min. Warm up 15 min, 2×8 min threshold, cool down.', tempo:'🔴 Reduced tempo — just enough to maintain sharpness without fatiguing.'},
+    {disc:'run', title:'Easy run', detail:'25 min easy.'},
+    {disc:'swim', title:'Technique', detail:'400m drills and easy swimming.'},
+    {disc:'run', title:'Easy run', detail:'20 min easy.'},
+    {disc:'bike', title:'Zone 2 ride', detail:'55 min easy.'},
+    {disc:'rest', title:'Rest day', detail:'Rest.'},
+  ]},
+  {num:13, dates:'Aug 11 – Aug 17', phase:2,
+   note:'Week 13 — sharpest week of the plan. Race-specific efforts. Confidence building.',
+   sessions:[
+    {disc:'tempo-swim', title:'Race simulation swim', detail:'1000m total. 200m warm up, 750m at race effort (your full race distance at race pace), 50m easy cool down.', tempo:'🔴 This is your race swim rehearsal. Go at race pace, sight properly, own it.'},
+    {disc:'brick', title:'Long brick — race simulation', detail:'Bike 50 min (15 min zone 2, 20 min threshold/race pace, 15 min zone 2), immediately run 25 min (10 min easy, 15 min tempo/race pace).', tempo:'🔴 Race simulation. Bike and run at race effort. Practice T2 transition.'},
+    {disc:'tempo-run', title:'Tempo run', detail:'35 min. Easy 8 min, 18 min tempo, easy 9 min.', tempo:'🔴 Tempo run: maintain sharpness from week 11.'},
+    {disc:'swim', title:'Open water practice', detail:'800m open water. Last open water session — make it count.'},
+    {disc:'weights', title:'Strength (lighter)', detail:'Deadlift 2×8 · Squat 2×10 · Clamshell 2×20 · Face pull 2×15.'},
+    {disc:'bike', title:'Zone 2 ride', detail:'60 min easy. Recovery.'},
+    {disc:'rest', title:'Rest day', detail:'Rest.'},
+  ]},
+  {num:14, dates:'Aug 18 – Aug 24', phase:2,
+   note:'Week 14 — final sharpen week. One last hard effort, then begin the mental shift to taper.',
+   sessions:[
+    {disc:'swim', title:'Easy swim', detail:'600m easy. Keep the feel for the water.'},
+    {disc:'tempo-bike', title:'Final tempo bike', detail:'55 min. Warm up 15 min, 2×12 min threshold, 5 min easy between, cool down.', tempo:'🔴 Last significant tempo bike of the plan. Make it count.'},
+    {disc:'tempo-run', title:'Final tempo run', detail:'32 min. Easy 8 min, 16 min tempo, easy 8 min.', tempo:'🔴 Last tempo run. You\'re sharp — trust it.'},
+    {disc:'swim', title:'Pool sets', detail:'700m. Mix easy swimming with 3×100m at race pace.'},
+    {disc:'weights', title:'Strength (light)', detail:'Bodyweight focus. Squat 2×10 · Clamshell 2×15 · Band pull-apart 2×15.'},
+    {disc:'bike', title:'Zone 2 ride', detail:'50 min easy.'},
+    {disc:'rest', title:'Rest day', detail:'Rest. Taper begins next week.'},
+  ]},
+
+  // ── PHASE 4: TAPER ─────────────────────────────────────────────────────────
+  {num:15, dates:'Aug 25 – Aug 31', phase:3,
+   note:'Taper week 1. Volume drops 40%. No hard tempo. Keep a tiny bit of intensity to stay sharp.',
+   sessions:[
+    {disc:'swim', title:'Easy swim', detail:'500m easy. Just keep the feel for the water.'},
+    {disc:'bike', title:'Short ride with strides', detail:'40 min easy. Include 3×1 min at race pace near the end to stay sharp.'},
+    {disc:'run', title:'Easy run with strides', detail:'20 min easy. 4×20 sec strides at the end — fast but not hard.'},
+    {disc:'swim', title:'Easy swim', detail:'400m easy.'},
+    {disc:'run', title:'Short easy run', detail:'15 min very easy.'},
+    {disc:'bike', title:'Easy spin', detail:'30 min very easy. Check bike is race-ready.'},
+    {disc:'rest', title:'Rest day', detail:'Rest. Trust the taper.'},
+  ]},
+  {num:16, dates:'Sep 1 – Sep 12', phase:3,
+   note:'Race week. Mon–Wed: short easy sessions only. Thu: full rest + gear check. Fri: shake-out. Sat: rest. Sun: race!',
+   sessions:[
+    {disc:'swim', title:'Easy swim', detail:'20 min Mon — very easy. Stay loose.'},
+    {disc:'run', title:'Short easy run', detail:'15 min Tue. Easy jog, nothing more.'},
+    {disc:'bike', title:'Easy spin', detail:'20 min Wed. Check the bike. Legs fresh.'},
+    {disc:'rest', title:'Rest + gear check', detail:'Thu — full rest. Lay out every piece of gear. Walk through T1 and T2 mentally.'},
+    {disc:'swim', title:'Shake-out swim', detail:'Fri — 15 min very easy. Last swim before the race.'},
+    {disc:'rest', title:'Rest day', detail:'Sat — full rest. Eat well, hydrate, sleep early.'},
+    {disc:'rest', title:'🏁 RACE DAY — Sept 12!', detail:'750m swim · 20km bike · 5km run. Seed toward the back, start easy, trust 16 weeks of work.'},
+  ]},
 ];
 
-// Template day structures per phase
-function makeWeek(weekNum) {
-  const p = weekNum <= 4 ? 1 : weekNum <= 10 ? 2 : weekNum <= 14 ? 3 : 4;
-  
-  const templates = {
-    1: [ // Phase 1
-      { disc: 'swim', title: 'Technique swim', detail: '30–40 min. Drills focus: catch-up drill, side kick. Keep it easy.' },
-      { disc: 'bike', title: 'Zone 2 ride', detail: '45 min easy. Conversational pace. Spin out the legs.' },
-      { disc: 'run', title: 'Easy run/walk', detail: `${Math.min(15 + weekNum * 2, 25)} min. Walk breaks as needed. Sciatica check: stop if pain spikes.` },
-      { disc: 'swim', title: 'Endurance swim', detail: `${300 + weekNum * 50}m continuous. Focus on breathing rhythm.` },
-      { disc: 'weights', title: 'Strength A', detail: 'Deadlift 3×8 · Goblet squat 3×10 · Clamshell 2×20 · Face pull 3×15 · Bird dog 3×10/side' },
-      { disc: 'bike', title: 'Long zone 2 ride', detail: `${50 + weekNum * 5} min. Relaxed, steady. Fuel during if over 60 min.` },
-      { disc: 'rest', title: 'Rest day', detail: 'Full rest or 15 min light mobility/stretching.' },
-    ],
-    2: [ // Phase 2
-      { disc: 'swim', title: 'Technique + distance swim', detail: `${500 + (weekNum - 4) * 50}m. Mix drills with continuous laps.` },
-      { disc: 'bike', title: 'Zone 2 ride', detail: '50 min easy. Maintain cadence around 85–90 rpm.' },
-      { disc: 'run', title: 'Building run', detail: `${20 + (weekNum - 4) * 3} min easy. No walk breaks needed by now unless sciatica flares.` },
-      { disc: 'swim', title: 'Endurance swim', detail: `${700 + (weekNum - 4) * 50}m. By week 8 you're exceeding race distance.` },
-      { disc: 'weights', title: 'Strength B', detail: 'Romanian deadlift 3×10 · Split squat 3×8 · Seated row 3×12 · Band pull-apart 3×15 · Plank 3×30s' },
-      { disc: 'bike', title: 'Long zone 2 ride', detail: `${60 + (weekNum - 4) * 5} min. Eat and drink on the bike — practice your race nutrition.` },
-      { disc: 'rest', title: 'Rest day', detail: 'Full rest. Foam roll if legs are tight.' },
-    ],
-    3: [ // Phase 3
-      { disc: 'swim', title: 'Race-pace swim', detail: '800–1000m. Include 4×100m at race effort with 20s rest.' },
-      { disc: 'brick', title: 'Brick workout', detail: `Bike ${40 + (weekNum - 10) * 5} min zone 2–3, then immediately run 15–20 min. Practice T2 transition.` },
-      { disc: 'run', title: 'Tempo run', detail: `${25 + (weekNum - 10) * 5} min. Include 10 min at a comfortably hard pace in the middle.` },
-      { disc: 'swim', title: 'Open water practice', detail: '800m. If possible, get in open water at least once. Practice sighting.' },
-      { disc: 'weights', title: 'Strength (lighter)', detail: 'Reduce weights 15%. Deadlift 2×8 · Squat 2×10 · Clamshell 2×20 · Face pull 2×15. Recovery focused.' },
-      { disc: 'bike', title: 'Moderate ride', detail: '60 min zone 2. Legs should feel good — if tired, cut to 40 min.' },
-      { disc: 'rest', title: 'Rest day', detail: 'Rest. Prep gear. Practice your transitions mentally.' },
-    ],
-    4: [ // Phase 4 taper
-      { disc: 'swim', title: 'Easy swim', detail: weekNum === 15 ? '600m easy. Keep your feel for the water.' : '400m. Very easy. Just staying loose.' },
-      { disc: 'bike', title: 'Short zone 2 ride', detail: weekNum === 15 ? '40 min easy.' : weekNum === 16 ? '20 min shakeout. Check your bike is race-ready.' : '30 min.' },
-      { disc: 'run', title: 'Easy short run', detail: weekNum === 15 ? '20 min very easy.' : '10–15 min shake-out jog. Race pace for 2 min at end.' },
-      { disc: 'swim', title: 'Race prep swim', detail: weekNum === 16 ? '300m very easy — last swim before race!' : '500m easy.' },
-      { disc: 'weights', title: weekNum === 16 ? 'Rest — skip weights' : 'Light strength', detail: weekNum === 16 ? 'No weights race week.' : 'Bodyweight only. Squat 2×10, clamshell 2×15. Nothing taxing.' },
-      { disc: weekNum === 16 ? 'rest' : 'bike', title: weekNum === 16 ? 'Rest / gear check' : 'Easy spin', detail: weekNum === 16 ? 'Full rest. Lay out all your gear. Sleep early.' : '30 min very easy spin.' },
-      { disc: 'rest', title: weekNum === 16 ? '🏁 RACE DAY — Sept 12!' : 'Rest day', detail: weekNum === 16 ? '750m swim · 20km bike · 5km run. You\'ve got this!' : 'Rest. You\'ve earned it.' },
-    ],
-  };
+const PHASES = [
+  {idx:0, label:'Phase 1 · Base', note:'<strong>Focus: Build the aerobic base. Tempo introduced on bike only (your strength).</strong> Weeks 1–3 add progressive bike tempo — 2×8 min building to 2×10 min. Swim and run stay easy only. Week 4 is a recovery week with no intensity. The 80/20 rule: roughly 1 hard session per week, everything else genuinely easy.'},
+  {idx:1, label:'Phase 2 · Build', note:'<strong>Focus: Tempo across all three disciplines, volume increasing.</strong> From week 5, swim gets threshold sets, run gets tempo, bike tempo continues to grow. Week 8 and week 12 are recovery weeks — do not skip them. The key rule: when easy days follow tempo days, keep them truly easy or the tempo work won\'t stick.'},
+  {idx:2, label:'Phase 3 · Sharpen', note:'<strong>Focus: Race-specific intensity, brick sessions, race simulations.</strong> Tempo shifts from "training hard" to "race pace" — you\'re rehearsing what Sept 12 will feel like. Week 12 is a mini recovery. Week 13 includes a full race-distance swim at race pace. Trust the process.'},
+  {idx:3, label:'Phase 4 · Taper', note:'<strong>Focus: Rest, sharpen, arrive fresh.</strong> Volume drops 40% in week 15. No hard tempo — just a few strides to keep the legs sharp. Race week is almost entirely rest. Taper madness (feeling sluggish, doubting your fitness) is completely normal. Your body is storing energy. Do not add extra workouts.'},
+];
 
-  return templates[p].map((d, i) => ({
-    ...d,
-    id: `w${weekNum}d${i+1}`,
-    dayName: DAY_NAMES[i],
-  }));
-}
+const WEEK1 = new Date('2025-05-19');
+function weekStart(w) { const d = new Date(WEEK1); d.setDate(d.getDate() + (w-1)*7); return d; }
+function fmtDate(d) { return d.toLocaleDateString('en-US', {month:'short', day:'numeric'}); }
 
-function getWeekStart(weekNum) {
-  const d = new Date(WEEK1_START);
-  d.setDate(d.getDate() + (weekNum - 1) * 7);
-  return d;
-}
+const TEMPO_DISCS = ['tempo-swim','tempo-bike','tempo-run'];
 
-function formatDate(d) {
-  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-}
-
-// ─── STORAGE ─────────────────────────────────────────────────────────────────
-const STORAGE_KEY = 'tri_tracker_v1';
 let completed = {};
-
-function load() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) completed = JSON.parse(raw);
-  } catch(e) { completed = {}; }
-}
-
-function save() {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(completed)); } catch(e) {}
-}
-
-// ─── RENDER ──────────────────────────────────────────────────────────────────
 let currentPhase = 0;
 
-function discClass(disc) {
-  return `badge-${disc}`;
+function load() {
+  try { const r = localStorage.getItem(STORAGE_KEY); if (r) completed = JSON.parse(r); } catch(e) {}
 }
-
-function discLabel(disc) {
-  return { swim:'swim', bike:'bike', run:'run', weights:'weights', brick:'brick', rest:'rest' }[disc] || disc;
-}
-
-function renderWeek(weekNum) {
-  const days = makeWeek(weekNum);
-  const start = getWeekStart(weekNum);
-  const end = new Date(start); end.setDate(end.getDate() + 6);
-  
-  const workoutDays = days.filter(d => d.disc !== 'rest');
-  const doneDays = workoutDays.filter(d => completed[d.id]);
-  const allDone = workoutDays.length > 0 && doneDays.length === workoutDays.length;
-  const pct = workoutDays.length ? Math.round(doneDays.length / workoutDays.length * 100) : 0;
-  
-  const pips = days.map(d => {
-    if (d.disc === 'rest') return `<div class="pip rest" title="${d.dayName}: Rest"></div>`;
-    return `<div class="pip ${completed[d.id] ? 'done' : ''}" title="${d.dayName}: ${d.title}"></div>`;
-  }).join('');
-
-  const daysHtml = days.map(d => {
-    const isRest = d.disc === 'rest';
-    const isDone = completed[d.id];
-    return `
-      <div class="day-row ${isDone ? 'completed' : ''} ${isRest ? 'rest-day' : ''}" id="row-${d.id}">
-        <div class="day-check ${isDone ? 'checked' : ''} ${isRest ? 'rest-check' : ''}"
-          onclick="${isRest ? '' : `toggle('${d.id}')`}"
-          title="${isRest ? 'Rest day' : isDone ? 'Mark incomplete' : 'Mark complete'}"
-        >${isDone ? '✓' : ''}</div>
-        <div class="day-info">
-          <div class="day-name-label">${d.dayName}</div>
-          <div class="day-title">${d.title}</div>
-          <div class="day-detail">${d.detail}</div>
-        </div>
-        <div class="disc-badge ${discClass(d.disc)}">${discLabel(d.disc)}</div>
-      </div>`;
-  }).join('');
-
-  return `
-    <div class="week ${allDone ? 'week-complete' : ''}" id="week-${weekNum}">
-      <div class="week-header" onclick="toggleWeek(${weekNum})">
-        <div>
-          <div class="week-label">Week ${weekNum} ${allDone ? '✓' : ''}</div>
-          <div class="week-dates">${formatDate(start)} – ${formatDate(end)}</div>
-        </div>
-        <div class="week-progress">
-          <div class="week-pips">${pips}</div>
-          <div class="week-pct">${pct}%</div>
-          <div class="week-chevron" id="chev-${weekNum}">▼</div>
-        </div>
-      </div>
-      <div class="week-days" id="days-${weekNum}">${daysHtml}</div>
-    </div>`;
-}
-
-function showPhase(phaseIdx) {
-  currentPhase = phaseIdx;
-  document.querySelectorAll('.phase-btn').forEach((b, i) => b.classList.toggle('active', i === phaseIdx));
-  
-  const phase = PHASES[phaseIdx];
-  const el = document.getElementById('main-content');
-  
-  let html = `<div class="phase-note">${phase.note}</div>`;
-  
-  phase.weeks.forEach(wk => {
-    if (wk === 16) {
-      html += `<div class="race-day-card">
-        <div class="race-icon">🏁</div>
-        <h2>Race Day — September 12</h2>
-        <p>750m swim · 20km bike · 5km run<br>Seed at the back, start easy, trust your training.</p>
-      </div>`;
-    }
-    html += renderWeek(wk);
-  });
-  
-  el.innerHTML = html;
-  updateStats();
-}
-
-function toggleWeek(weekNum) {
-  const days = document.getElementById(`days-${weekNum}`);
-  const chev = document.getElementById(`chev-${weekNum}`);
-  days.classList.toggle('open');
-  chev.classList.toggle('open');
+function save() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(completed)); } catch(e) {}
 }
 
 function toggle(id) {
   completed[id] = !completed[id];
   save();
-  // Re-render current phase to update pips, week state etc.
   showPhase(currentPhase);
 }
 
-// ─── STATS ───────────────────────────────────────────────────────────────────
+function toggleWeek(num) {
+  const d = document.getElementById('days-' + num);
+  const c = document.getElementById('chev-' + num);
+  if (d) { d.classList.toggle('open'); c.classList.toggle('open'); }
+}
+
+function discLabel(disc) {
+  const map = {'swim':'swim','bike':'bike','run':'run','weights':'weights','brick':'brick','rest':'rest','tempo-swim':'tempo swim','tempo-bike':'tempo bike','tempo-run':'tempo run'};
+  return map[disc] || disc;
+}
+
+function badgeClass(disc) {
+  const map = {'swim':'badge-swim','bike':'badge-bike','run':'badge-run','weights':'badge-weights','brick':'badge-brick','rest':'badge-rest','tempo-swim':'badge-tempo-swim','tempo-bike':'badge-tempo-bike','tempo-run':'badge-tempo-run'};
+  return map[disc] || 'badge-rest';
+}
+
+function showPhase(phaseIdx) {
+  currentPhase = phaseIdx;
+  document.querySelectorAll('.phase-btn').forEach((b,i) => b.classList.toggle('active', i === phaseIdx));
+  const ph = PHASES[phaseIdx];
+  const weeks = WEEKS.filter(w => w.phase === phaseIdx);
+
+  let html = `<div class="phase-note">${ph.note}</div>`;
+  html += `<div class="intensity-legend"><strong>🔴 Tempo/Threshold sessions</strong> are marked with a red left border and labelled in red. These are your ~20% high-intensity work. Keep the remaining sessions genuinely easy — conversational pace, zone 2 only.</div>`;
+
+  weeks.forEach(wk => {
+    const workouts = wk.sessions.filter(s => s.disc !== 'rest');
+    const doneCt = workouts.filter((s,i) => completed[`w${wk.num}d${wk.sessions.indexOf(s)+1}`]).length;
+    const allDone = workouts.length > 0 && doneCt === workouts.length;
+    const pct = workouts.length ? Math.round(doneCt / workouts.length * 100) : 0;
+
+    const pips = wk.sessions.map((s,i) => {
+      const id = `w${wk.num}d${i+1}`;
+      let cls = '';
+      if (s.disc === 'rest') cls = 'rest';
+      else if (completed[id]) cls = 'done';
+      else if (TEMPO_DISCS.includes(s.disc)) cls = 'tempo';
+      return `<div class="pip ${cls}" title="${DAYS[i]}: ${s.title}"></div>`;
+    }).join('');
+
+    const daysHtml = wk.sessions.map((s,i) => {
+      const id = `w${wk.num}d${i+1}`;
+      const isRest = s.disc === 'rest';
+      const isTempo = TEMPO_DISCS.includes(s.disc);
+      const isDone = completed[id];
+      return `<div class="day-row ${isDone ? 'completed' : ''} ${isRest ? 'rest-day' : ''} ${isTempo ? 'tempo-day' : ''}">
+        <div class="day-check ${isDone ? 'checked' : ''} ${isRest ? 'rest-check' : ''}" onclick="${isRest ? '' : `toggle('${id}')`}">${isDone ? '✓' : ''}</div>
+        <div class="day-info">
+          <div class="day-name-label">${DAYS[i]}</div>
+          <div class="day-title">${s.title}</div>
+          <div class="day-detail">${s.detail}</div>
+          ${s.tempo ? `<div class="tempo-note">${s.tempo}</div>` : ''}
+        </div>
+        <div class="disc-badge ${badgeClass(s.disc)}">${discLabel(s.disc)}</div>
+      </div>`;
+    }).join('');
+
+    if (wk.num === 16) {
+      html += `<div class="race-day-card"><div style="font-size:3rem;margin-bottom:.75rem">🏁</div><h2>Race Day — September 12</h2><p>750m swim · 20km bike · 5km run<br>16 weeks of work. Trust it.</p></div>`;
+    }
+
+    html += `<div class="week ${allDone ? 'week-complete' : ''}" id="week-${wk.num}">
+      <div class="week-header" onclick="toggleWeek(${wk.num})">
+        <div>
+          <div class="week-label">Week ${wk.num}${allDone ? ' ✓' : ''}</div>
+          <div class="week-dates">${wk.dates} · ${wk.note.substring(0,55)}...</div>
+        </div>
+        <div class="week-progress">
+          <div class="week-pips">${pips}</div>
+          <div class="week-pct">${pct}%</div>
+          <div class="week-chevron" id="chev-${wk.num}">▼</div>
+        </div>
+      </div>
+      <div class="week-days" id="days-${wk.num}">${daysHtml}</div>
+    </div>`;
+  });
+
+  document.getElementById('main-content').innerHTML = html;
+  updateStats();
+}
+
 function updateStats() {
   let total = 0, done = 0;
-  let disc = { swim: [0,0], bike: [0,0], run: [0,0], weights: [0,0] };
+  const disc = {swim:[0,0], bike:[0,0], run:[0,0], weights:[0,0]};
   let weeksComplete = 0;
 
-  for (let w = 1; w <= 16; w++) {
-    const days = makeWeek(w);
-    const workouts = days.filter(d => d.disc !== 'rest');
-    const weekDone = workouts.filter(d => completed[d.id]).length;
-    if (workouts.length > 0 && weekDone === workouts.length) weeksComplete++;
-    workouts.forEach(d => {
-      total++;
-      if (completed[d.id]) done++;
-      const key = ['swim','bike','run','weights'].includes(d.disc) ? d.disc : d.disc === 'brick' ? 'bike' : null;
-      if (key) {
-        disc[key][0]++;
-        if (completed[d.id]) disc[key][1]++;
-      }
+  WEEKS.forEach(wk => {
+    const workouts = wk.sessions.filter(s => s.disc !== 'rest');
+    const wDone = workouts.filter(s => completed[`w${wk.num}d${wk.sessions.indexOf(s)+1}`]).length;
+    if (workouts.length && wDone === workouts.length) weeksComplete++;
+    workouts.forEach(s => {
+      const id = `w${wk.num}d${wk.sessions.indexOf(s)+1}`;
+      total++; if (completed[id]) done++;
+      const base = s.disc.replace('tempo-','');
+      if (disc[base]) { disc[base][0]++; if (completed[id]) disc[base][1]++; }
+      else if (s.disc === 'brick') { disc.bike[0]++; if (completed[id]) disc.bike[1]++; }
     });
-  }
+  });
 
-  const pct = total ? Math.round(done / total * 100) : 0;
+  const pct = total ? Math.round(done/total*100) : 0;
   document.getElementById('stat-done').textContent = done;
   document.getElementById('stat-total').textContent = total;
-  document.getElementById('stat-pct').textContent = pct + '%';
+  document.getElementById('stat-pct').textContent = pct+'%';
   document.getElementById('stat-weeks').textContent = weeksComplete;
-  document.getElementById('main-bar').style.width = pct + '%';
+  document.getElementById('main-bar').style.width = pct+'%';
 
-  ['swim','bike','run','weights'].forEach(d => {
-    const p = disc[d][0] ? Math.round(disc[d][1] / disc[d][0] * 100) : 0;
-    document.getElementById(`bar-${d}`).style.width = p + '%';
-    document.getElementById(`lbl-${d}`).textContent = p + '%';
+  [['swim','swim'],['bike','bike'],['run','run'],['weights','weights']].forEach(([k,sfx]) => {
+    const p = disc[k][0] ? Math.round(disc[k][1]/disc[k][0]*100) : 0;
+    document.getElementById('bar-'+sfx).style.width = p+'%';
+    document.getElementById('lbl-'+sfx).textContent = p+'%';
   });
 }
 
-// ─── INIT ────────────────────────────────────────────────────────────────────
 load();
 showPhase(0);
 </script>
