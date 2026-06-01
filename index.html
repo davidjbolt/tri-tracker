@@ -561,9 +561,7 @@ for (let w = 1; w <= 16; w++) {
 
 function showStrength() {
   document.querySelectorAll('.phase-btn').forEach((b,i) => b.classList.toggle('active', i === 4));
-  document.getElementById('phase-note').style.display = 'none';
-
-  let html = `<div class="phase-note" style="display:block">
+  let html = `<div class="phase-note">
     <strong>Full body strength — 2×/week, 12–15 reps.</strong> Workout A and B alternate each week. Drop to 2 sets in Phase 3 (weeks 11–14). Skip entirely race week. Check off each session when done — individual exercises expand for reference.
     <br><br><strong>Sciatica watch:</strong> if barbell squat, RDL, or Bulgarian split squat cause nerve pain, substitute goblet squat + glute bridge and skip the offending exercise.
   </div>`;
@@ -635,7 +633,7 @@ function toggleStrEx(id) {
 }
 
 function toggleStr(id) {
-  completed['str_s' + id] = !completed['str_s' + id];
+  completed['str_' + id] = !completed['str_' + id];
   save();
   showStrength();
 }
