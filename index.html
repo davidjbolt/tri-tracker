@@ -107,6 +107,30 @@
   .race-day-card h2 { font-family: 'Fraunces', serif; font-size: 1.5rem; margin-bottom: .5rem; }
   .race-day-card p { font-size: 12px; color: rgba(255,255,255,.6); }
 
+  .str-week { border: 1px solid var(--border); border-radius: 6px; margin-bottom: .75rem; overflow: hidden; }
+  .str-week-hdr { display: flex; align-items: center; justify-content: space-between; padding: .6rem 1rem; background: #fff; cursor: pointer; }
+  .str-week-hdr:hover { background: var(--cream); }
+  .str-days { display: none; border-top: 1px solid var(--border); }
+  .str-days.open { display: block; }
+  .str-session { border-bottom: 1px solid var(--border); }
+  .str-session:last-child { border-bottom: none; }
+  .str-session-hdr { display: flex; align-items: center; gap: .75rem; padding: .65rem 1rem; background: var(--cream); border-bottom: 1px solid var(--border); }
+  .str-session-hdr .day-check { flex-shrink: 0; }
+  .str-session-title { font-size: 12px; font-weight: 500; }
+  .str-session-sub { font-size: 10px; color: var(--muted); }
+  .str-ex-row { display: grid; grid-template-columns: 2fr 1fr 2fr; gap: 8px; padding: .6rem 1rem .6rem 2.75rem; border-bottom: 1px solid var(--border); align-items: start; }
+  .str-ex-row:last-child { border-bottom: none; }
+  .str-ex-name { font-size: 12px; font-weight: 500; }
+  .str-ex-note { font-size: 10px; color: var(--muted); margin-top: 1px; }
+  .str-sets { font-size: 11px; color: var(--muted); }
+  .str-cue { font-size: 11px; color: var(--muted); line-height: 1.5; }
+  .str-badge { font-size: 9px; letter-spacing: .08em; text-transform: uppercase; padding: 2px 6px; border-radius: 3px; font-weight: 500; display: inline-block; margin-top: 2px; }
+  .str-lower { background: #eff6ff; color: #1d4ed8; }
+  .str-upper { background: #f5f3ff; color: #7c3aed; }
+  .str-core { background: #f0fdf4; color: #16a34a; }
+  .str-complete { background: #f0fdf4; }
+  .str-complete .str-week-hdr { background: #f0fdf4; }
+
   @media (max-width: 600px) {
     header, .progress-section, .phase-nav, main { padding-left: 1rem; padding-right: 1rem; }
     .progress-stats { gap: 1rem; }
@@ -154,6 +178,7 @@
     <button class="phase-btn" onclick="showPhase(1)">Phase 2 · Build</button>
     <button class="phase-btn" onclick="showPhase(2)">Phase 3 · Sharpen</button>
     <button class="phase-btn" onclick="showPhase(3)">Phase 4 · Taper</button>
+    <button class="phase-btn" onclick="showStrength()">Strength Log</button>
   </div>
 </div>
 
@@ -494,6 +519,143 @@ function updateStats() {
     const p = disc[k][0] ? Math.round(disc[k][1]/disc[k][0]*100) : 0;
     document.getElementById('bar-'+sfx).style.width = p+'%';
     document.getElementById('lbl-'+sfx).textContent = p+'%';
+  });
+}
+
+// ── STRENGTH PROGRAM ─────────────────────────────────────────────────────────
+const STR_A = [
+  {name:'Barbell back squat', note:'Squat rack', sets:'3 × 12–15', cat:'lower', cue:'Depth to parallel. Drive knees out. Key for run and bike power.'},
+  {name:'Romanian deadlift', note:'Barbell or dumbbells', sets:'3 × 12–15', cat:'lower', cue:'Hinge at hip, soft knee. Feel the hamstring stretch. Protects sciatica.'},
+  {name:'Pull-ups / assisted pull-ups', note:'Pull-up bar', sets:'3 × 12–15', cat:'upper', cue:'Use band for assistance if needed. Builds swim pull strength.'},
+  {name:'Dumbbell reverse lunge', note:'Dumbbells', sets:'3 × 12 each leg', cat:'lower', cue:'Step back, not forward — easier on knees and sciatica.'},
+  {name:'Dumbbell bench press', note:'Bench + dumbbells', sets:'3 × 12–15', cat:'upper', cue:'Full range of motion. Maintains posture on the bike.'},
+  {name:'Dead bug', note:'Bodyweight', sets:'3 × 12 each side', cat:'core', cue:'Press low back into floor throughout. Key sciatica-prevention exercise.'},
+  {name:'Clamshell', note:'Band optional', sets:'3 × 20 each side', cat:'lower', cue:'Hip abductor strength. Protects IT band — critical for run injury prevention.'},
+  {name:'Face pull / rear delt fly', note:'Dumbbells bent-over', sets:'3 × 15', cat:'upper', cue:'Keeps shoulders healthy for swimming.'},
+];
+const STR_B = [
+  {name:'Goblet squat', note:'Single dumbbell', sets:'3 × 15', cat:'lower', cue:'Hold at chest, squat deep, elbows inside knees.'},
+  {name:'Single-leg deadlift', note:'Dumbbells', sets:'3 × 12 each leg', cat:'lower', cue:'Hinge on one leg, keep hips square. Builds glute stability for sciatica.'},
+  {name:'Dumbbell row', note:'Bench + dumbbell', sets:'3 × 12–15 each side', cat:'upper', cue:'Pull elbow to hip. Same pull pattern as freestyle swim.'},
+  {name:'Bulgarian split squat', note:'Bench + dumbbells', sets:'3 × 12 each leg', cat:'lower', cue:'Rear foot on bench. Hardest exercise — go light first.'},
+  {name:'Dumbbell shoulder press', note:'Seated or standing', sets:'3 × 12–15', cat:'upper', cue:'Don\'t flare elbows wide. Shoulder stability for swimming.'},
+  {name:'Bird dog', note:'Bodyweight', sets:'3 × 12 each side', cat:'core', cue:'Hold 2 sec at top. Lumbar stability — directly addresses sciatica.'},
+  {name:'Glute bridge / hip thrust', note:'Barbell or bodyweight', sets:'3 × 15', cat:'lower', cue:'Full hip extension, squeeze hard. Load with barbell when easy.'},
+  {name:'Pallof press / anti-rotation', note:'Dumbbell at chest', sets:'3 × 12 each side', cat:'core', cue:'Resist rotation. Core stability for all three disciplines.'},
+];
+
+// Build 2 sessions per week × 16 weeks
+const STR_WEEKS = [];
+for (let w = 1; w <= 16; w++) {
+  const phase = w <= 4 ? 1 : w <= 10 ? 2 : w <= 14 ? 3 : 4;
+  const taper = phase >= 3;
+  const raceWk = w === 16;
+  STR_WEEKS.push({
+    num: w,
+    sessions: [
+      { id: `s${w}a`, label: 'Workout A', sub: taper ? (raceWk ? 'Skip race week' : 'Reduced — 2 sets, lighter weight') : 'Full program', exercises: STR_A, skip: raceWk },
+      { id: `s${w}b`, label: 'Workout B', sub: taper ? (raceWk ? 'Skip race week' : 'Reduced — 2 sets, lighter weight') : 'Full program', exercises: STR_B, skip: raceWk },
+    ]
+  });
+}
+
+function showStrength() {
+  document.querySelectorAll('.phase-btn').forEach((b,i) => b.classList.toggle('active', i === 4));
+  document.getElementById('phase-note').style.display = 'none';
+
+  let html = `<div class="phase-note" style="display:block">
+    <strong>Full body strength — 2×/week, 12–15 reps.</strong> Workout A and B alternate each week. Drop to 2 sets in Phase 3 (weeks 11–14). Skip entirely race week. Check off each session when done — individual exercises expand for reference.
+    <br><br><strong>Sciatica watch:</strong> if barbell squat, RDL, or Bulgarian split squat cause nerve pain, substitute goblet squat + glute bridge and skip the offending exercise.
+  </div>`;
+
+  STR_WEEKS.forEach(wk => {
+    const doneCount = wk.sessions.filter(s => completed['str_' + s.id]).length;
+    const allDone = doneCount === 2 && !wk.sessions[0].skip;
+    const pct = wk.sessions[0].skip ? 100 : Math.round(doneCount / 2 * 100);
+
+    const pips = wk.sessions.map(s => {
+      const cls = s.skip ? 'rest' : completed['str_' + s.id] ? 'done' : '';
+      return `<div class="pip ${cls}"></div>`;
+    }).join('');
+
+    const sessionsHtml = wk.sessions.map(s => {
+      const isDone = completed['str_' + s.id];
+      const exHtml = s.exercises.map(ex => `
+        <div class="str-ex-row">
+          <div><div class="str-ex-name">${ex.name}</div><div class="str-ex-note">${ex.note}</div>
+          <span class="str-badge str-${ex.cat}">${ex.cat}</span></div>
+          <div class="str-sets">${ex.sets}</div>
+          <div class="str-cue">${ex.cue}</div>
+        </div>`).join('');
+
+      return `<div class="str-session">
+        <div class="str-session-hdr">
+          <div class="day-check ${isDone ? 'checked' : ''} ${s.skip ? 'rest-check' : ''}"
+            onclick="${s.skip ? '' : `toggleStr('${s.id}')`}"
+            title="${s.skip ? 'Skip race week' : isDone ? 'Mark incomplete' : 'Mark complete'}"
+          >${isDone ? '✓' : ''}</div>
+          <div>
+            <div class="str-session-title">${s.label}</div>
+            <div class="str-session-sub">${s.sub}</div>
+          </div>
+          <div style="margin-left:auto;font-size:10px;color:var(--muted);cursor:pointer" onclick="toggleStrEx('ex-${wk.num}-${s.id}')">expand ▾</div>
+        </div>
+        <div class="str-days" id="ex-${wk.num}-${s.id}">${exHtml}</div>
+      </div>`;
+    }).join('');
+
+    html += `<div class="str-week ${allDone ? 'str-complete' : ''}" id="str-week-${wk.num}">
+      <div class="str-week-hdr" onclick="toggleStrWeek(${wk.num})">
+        <div>
+          <div style="font-size:12px;font-weight:500;">Week ${wk.num}${allDone ? ' ✓' : ''}</div>
+          <div style="font-size:10px;color:var(--muted);">2 sessions · ${pct}% complete</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:.6rem;">
+          <div style="display:flex;gap:3px;">${pips}</div>
+          <div class="week-chevron" id="str-chev-${wk.num}">▼</div>
+        </div>
+      </div>
+      <div class="str-days" id="str-days-${wk.num}">${sessionsHtml}</div>
+    </div>`;
+  });
+
+  document.getElementById('main-content').innerHTML = html;
+  updateStrStats();
+}
+
+function toggleStrWeek(num) {
+  const d = document.getElementById('str-days-' + num);
+  const c = document.getElementById('str-chev-' + num);
+  if (d) { d.classList.toggle('open'); c.classList.toggle('open'); }
+}
+
+function toggleStrEx(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('open');
+}
+
+function toggleStr(id) {
+  completed['str_s' + id] = !completed['str_s' + id];
+  save();
+  showStrength();
+}
+
+function updateStrStats() {
+  let done = 0, total = 0;
+  STR_WEEKS.forEach(wk => {
+    wk.sessions.forEach(s => {
+      if (!s.skip) { total++; if (completed['str_' + s.id]) done++; }
+    });
+  });
+  const pct = total ? Math.round(done / total * 100) : 0;
+  document.getElementById('stat-done').textContent = done;
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-pct').textContent = pct + '%';
+  document.getElementById('stat-weeks').textContent = Math.floor(done / 2);
+  document.getElementById('main-bar').style.width = pct + '%';
+  ['swim','bike','run','weights'].forEach(k => {
+    document.getElementById('bar-'+k).style.width = '0%';
+    document.getElementById('lbl-'+k).textContent = '—';
   });
 }
 
