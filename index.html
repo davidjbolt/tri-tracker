@@ -429,7 +429,57 @@ function save() {
 function toggle(id) {
   completed[id] = !completed[id];
   save();
-  showPhase(currentPhase);
+
+  // Update just the checkbox and row in place — don't re-render the whole phase
+  const chk = document.querySelector(`[onclick="toggle('${id}')"]`);
+  if (chk) {
+    chk.classList.toggle('checked', !!completed[id]);
+    chk.textContent = completed[id] ? '✓' : '';
+    const row = chk.closest('.day-row');
+    if (row) row.classList.toggle('completed', !!completed[id]);
+  }
+
+  // Update the week's pip and percentage
+  const wkNum = parseInt(id.replace(/w(\d+)d\d+/, '$1'));
+  const wkEl = document.getElementById('week-' + wkNum);
+  if (wkEl) {
+    const wkData = WEEKS.find(w => w.num === wkNum);
+    if (wkData) {
+      const workouts = wkData.sessions.filter(s => s.disc !== 'rest');
+      const doneCt = workouts.filter(s => completed[`w${wkNum}d${wkData.sessions.indexOf(s)+1}`]).length;
+      const allDone = workouts.length > 0 && doneCt === workouts.length;
+      const pct = workouts.length ? Math.round(doneCt / workouts.length * 100) : 0;
+
+      // Update pct label
+      const pctEl = wkEl.querySelector('.week-pct');
+      if (pctEl) pctEl.textContent = pct + '%';
+
+      // Update pips
+      const pipEls = wkEl.querySelectorAll('.pip:not(.rest)');
+      let pipIdx = 0;
+      wkData.sessions.forEach((s, i) => {
+        if (s.disc === 'rest') return;
+        const sid = `w${wkNum}d${i+1}`;
+        if (pipEls[pipIdx]) {
+          pipEls[pipIdx].classList.toggle('done', !!completed[sid]);
+          pipIdx++;
+        }
+      });
+
+      // Update week complete styling
+      const hdr = wkEl.querySelector('.week-header');
+      if (hdr) {
+        wkEl.classList.toggle('week-complete', allDone);
+        hdr.style.background = allDone ? '#f0fdf4' : '';
+      }
+
+      // Update week label
+      const lbl = wkEl.querySelector('.week-label');
+      if (lbl) lbl.textContent = `Week ${wkNum}${allDone ? ' ✓' : ''}`;
+    }
+  }
+
+  updateStats();
 }
 
 function toggleWeek(num) {
